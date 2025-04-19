@@ -1,8 +1,18 @@
 import streamlit as st
-from backend import get_chat_response
+
+# Try to import the backend module
+try:
+    from backend import get_chat_response
+    backend_available = True
+except ImportError:
+    backend_available = False
 
 st.set_page_config(page_title="Study ChatBot", layout="wide")
 st.title("📚 Study ChatBot")
+
+# Display warning if backend is not available
+if not backend_available:
+    st.warning("Backend module not found. Make sure 'backend.py' is in the same directory as 'app.py'.")
 
 # Initialize chat history
 if "chat_history" not in st.session_state:
@@ -20,11 +30,22 @@ with col2:
 
 # Process input
 if (send_button or user_input) and user_input:
-    # Get response from backend
-    response = get_chat_response(user_input, st.session_state.chat_history)
+    # Store the user input
+    user_message = user_input
     
-    # Add to chat history
-    st.session_state.chat_history.append({"role": "user", "content": user_input})
+    # Add user message to chat history
+    st.session_state.chat_history.append({"role": "user", "content": user_message})
+    
+    # Get response from backend if available
+    if backend_available:
+        try:
+            response = get_chat_response(user_message, st.session_state.chat_history[:-1])
+        except Exception as e:
+            response = f"An error occurred: {str(e)}"
+    else:
+        response = "Backend service is not available. Please check if backend.py exists and all dependencies are installed."
+    
+    # Add assistant response to chat history
     st.session_state.chat_history.append({"role": "assistant", "content": response})
     
     # Clear the input field after sending
