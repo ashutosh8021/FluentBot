@@ -168,7 +168,7 @@ with st.sidebar:
     st.markdown("### ⚡ Quick Start")
     
     if st.button("🎯 Start Learning", use_container_width=True):
-        st.session_state.show_learning_guide = True
+        st.session_state.show_progress = True
     
     if st.button("📈 My Progress", use_container_width=True):
         st.session_state.show_progress = True
@@ -216,106 +216,31 @@ with st.sidebar:
     
     col1, col2 = st.columns(2)
     with col1:
-        if st.button("📅 30-Day Roadmap", use_container_width=True, key="sidebar_roadmap"):
+        if st.button("📅 30-Day Roadmap", use_container_width=True):
             st.session_state.show_roadmap = True
         
-        if st.button("📝 Daily Practice", use_container_width=True, key="sidebar_practice"):
+        if st.button("📝 Daily Practice", use_container_width=True):
             st.session_state.show_daily_practice = True
     
     with col2:
-        if st.button("🧠 Vocabulary Quiz", use_container_width=True, key="sidebar_vocab"):
+        if st.button("🧠 Vocabulary Quiz", use_container_width=True):
             st.session_state.show_vocab_quiz = True
         
-        if st.button("📖 Grammar Lesson", use_container_width=True, key="sidebar_grammar"):
+        if st.button("📖 Grammar Lesson", use_container_width=True):
             st.session_state.show_grammar = True
 
 # Handle Progress display
 if st.session_state.get("show_progress"):
     current_lang = st.session_state.get("current_language", "None selected")
     current_level = st.session_state.get("current_level", "None selected")
-    
-    # Calculate some basic stats
-    total_messages = len(st.session_state.chat_history)
-    user_messages = len([msg for msg in st.session_state.chat_history if msg["role"] == "user"])
-    
     st.info(f"""
-    **📊 Your FluentBot Progress Dashboard**
-    
-    **🌍 Current Learning:**
-    • Language: {current_lang}
-    • Level: {current_level}
-    • Learning Session: Active
-    
-    **💬 Chat Activity:**
-    • Total Messages: {total_messages}
-    • Your Questions: {user_messages}
-    • AI Responses: {total_messages - user_messages}
-    
-    **🎯 Today's Goals:**
-    • ✅ Selected a language to learn
-    • ⏳ Complete 1 vocabulary quiz
-    • ⏳ Try daily practice
-    • ⏳ Have 5 conversations with FluentBot
-    
-    **🏆 Achievements:**
-    • 🤖 Met FluentBot (Welcome!)
-    • 🌍 Chose your learning language
-    • 💪 Ready to start your journey!
-    
-    **📈 Keep Going:** Practice daily for the best results!
+    **📊 Your Language Learning Progress:**
+    • Current Language: {current_lang}
+    • Current Level: {current_level}
+    • Chat Messages: {len(st.session_state.chat_history)}
+    • Keep practicing! 🌟
     """)
-    
-    # Progress action buttons
-    col1, col2 = st.columns(2)
-    with col1:
-        if st.button("🧠 Take Quiz", use_container_width=True, key="progress_quiz"):
-            st.session_state.show_vocab_quiz = True
-    with col2:
-        if st.button("📝 Practice Now", use_container_width=True, key="progress_practice"):
-            st.session_state.show_daily_practice = True
     st.session_state.show_progress = False
-
-# Handle Learning Guide display
-if st.session_state.get("show_learning_guide"):
-    current_lang = st.session_state.get("current_language", "🇫🇷 French")
-    current_level = st.session_state.get("current_level", "🌱 Beginner")
-    
-    st.success(f"""
-    **🎯 Welcome to FluentBot Learning! - {current_lang} ({current_level})**
-    
-    **🚀 Quick Start Options:**
-    
-    **1. 📅 30-Day Roadmap** - Get your personalized learning path
-    **2. 🧠 Vocabulary Quiz** - Test your current knowledge  
-    **3. 📝 Daily Practice** - Start with today's challenge
-    **4. 📖 Grammar Lesson** - Learn new concepts
-    **5. 💬 AI Chat** - Practice conversation with FluentBot
-    
-    **💡 Recommended for {current_level.split()[1]}s:**
-    • Start with Vocabulary Quiz to assess your level
-    • Check out the 30-Day Roadmap for structured learning
-    • Use Daily Practice for consistent improvement
-    • Chat with FluentBot for personalized help
-    
-    **🎯 Today's Focus:** Master 5 new words and practice one conversation
-    """)
-    
-    # Quick action buttons
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        if st.button("📅 View Roadmap", use_container_width=True, key="guide_roadmap"):
-            st.session_state.show_roadmap = True
-            st.session_state.show_learning_guide = False
-    with col2:
-        if st.button("🧠 Start Quiz", use_container_width=True, key="guide_quiz"):
-            st.session_state.show_vocab_quiz = True
-            st.session_state.show_learning_guide = False
-    with col3:
-        if st.button("📝 Daily Practice", use_container_width=True, key="guide_practice"):
-            st.session_state.show_daily_practice = True
-            st.session_state.show_learning_guide = False
-    
-    st.session_state.show_learning_guide = False
 
 # 🌍 LANGUAGE LEARNING FEATURE HANDLERS
 if st.session_state.get("show_roadmap"):
@@ -410,7 +335,7 @@ if st.session_state.get("show_vocab_quiz"):
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        if st.button("✅ Check Answer", use_container_width=True, key="vocab_check"):
+        if st.button("✅ Check Answer", use_container_width=True):
             if user_answer.strip().lower() in current_word['translation'].lower():
                 st.success(f"🎉 Correct! '{current_word['word']}' means '{current_word['translation']}'")
                 st.balloons()
@@ -418,12 +343,12 @@ if st.session_state.get("show_vocab_quiz"):
                 st.error(f"❌ Not quite. '{current_word['word']}' means '{current_word['translation']}'")
     
     with col2:
-        if st.button("🔄 New Word", use_container_width=True, key="vocab_new"):
+        if st.button("🔄 New Word", use_container_width=True):
             st.session_state.current_vocab_word = random.choice(current_vocab)
             st.rerun()
     
     with col3:
-        if st.button("💡 Show Answer", use_container_width=True, key="vocab_show"):
+        if st.button("💡 Show Answer", use_container_width=True):
             st.info(f"**Answer:** {current_word['translation']}")
     
     st.session_state.show_vocab_quiz = False
@@ -477,7 +402,7 @@ if st.session_state.get("show_daily_practice"):
     
     col1, col2 = st.columns(2)
     with col1:
-        if st.button("📨 Submit Answer", use_container_width=True, key="practice_submit"):
+        if st.button("📨 Submit Answer", use_container_width=True):
             if user_practice_answer.strip():
                 st.success("🎉 Great job on completing today's practice!")
                 st.info(f"""
@@ -493,7 +418,7 @@ if st.session_state.get("show_daily_practice"):
                 st.balloons()
     
     with col2:
-        if st.button("🔄 New Question", use_container_width=True, key="practice_new"):
+        if st.button("🔄 New Question", use_container_width=True):
             st.session_state.daily_question = random.choice(practice_questions)
             st.rerun()
     
@@ -555,7 +480,7 @@ user_message = st.text_input(
     key="user_input"
 )
 
-if st.button("Send 📤", use_container_width=True, key="chat_send") or user_message:
+if st.button("Send 📤", use_container_width=True) or user_message:
     if user_message.strip():
         # Add user message to chat history
         st.session_state.chat_history.append({"role": "user", "content": user_message})
