@@ -1,7 +1,14 @@
 # Load environment variables FIRST - before any other imports
 import os
-from dotenv import load_dotenv
-load_dotenv()  # Load .env file immediately
+
+# Try to load dotenv with error handling
+try:
+    from dotenv import load_dotenv
+    load_dotenv()  # Load .env file if available
+except ImportError:
+    # If dotenv is not available (like in some cloud environments), that's okay
+    # Environment variables can still be set directly
+    pass
 
 import streamlit as st
 
@@ -21,9 +28,25 @@ from typing import List, Dict
 from datetime import datetime
 
 # Check for required API key - only OpenRouter needed!
-if not os.environ.get("OPENROUTER_API_KEY"):
-    st.error("⚠️ OPENROUTER_API_KEY not found! Please add it to your .env file")
-    st.info("🔑 Get your free API key from: https://openrouter.ai/")
+api_key = os.environ.get("OPENROUTER_API_KEY")
+if not api_key:
+    st.error("⚠️ OPENROUTER_API_KEY not found!")
+    
+    st.markdown("""
+    ### 🔑 How to add your API key:
+    
+    **For Local Development:**
+    1. Create a `.env` file in your project root
+    2. Add: `OPENROUTER_API_KEY=your_key_here`
+    3. Restart the app
+    
+    **For Streamlit Cloud:**
+    1. Go to your app settings
+    2. Add `OPENROUTER_API_KEY` to secrets
+    3. Redeploy the app
+    
+    **Get your free API key:** https://openrouter.ai/
+    """)
     st.stop()
 
 # Try to import backend
