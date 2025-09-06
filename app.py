@@ -27,8 +27,16 @@ import random
 from typing import List, Dict
 from datetime import datetime
 
-# Check for required API key - only OpenRouter needed!
+# Check for required API key - check both env vars and Streamlit secrets
 api_key = os.environ.get("OPENROUTER_API_KEY")
+
+# If not in environment variables, try Streamlit secrets
+if not api_key:
+    try:
+        api_key = st.secrets["OPENROUTER_API_KEY"]
+    except:
+        pass
+
 if not api_key:
     st.error("⚠️ OPENROUTER_API_KEY not found!")
     
@@ -48,6 +56,9 @@ if not api_key:
     **Get your free API key:** https://openrouter.ai/
     """)
     st.stop()
+
+# Set the API key in environment for backend to use
+os.environ["OPENROUTER_API_KEY"] = api_key
 
 # Try to import backend
 try:

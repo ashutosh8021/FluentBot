@@ -74,7 +74,24 @@ Support for 15+ languages including:
 
 6. **Open your browser** to `http://localhost:8501`
 
-## 🔑 API Configuration
+## � Deployment
+
+### Streamlit Cloud Deployment
+
+1. **Fork/Clone** this repository to your GitHub account
+2. **Go to** [share.streamlit.io](https://share.streamlit.io)
+3. **Deploy** your app by connecting your GitHub repository
+4. **Add API Key** to secrets:
+   - Go to your app settings
+   - Click on "Secrets" 
+   - Add: `OPENROUTER_API_KEY = "your_key_here"`
+5. **Redeploy** and your FluentBot will be live!
+
+### Other Deployment Platforms
+
+FluentBot works on any platform that supports Streamlit. Just make sure to set the `OPENROUTER_API_KEY` environment variable.
+
+## �🔑 API Configuration
 
 ### Required API Key
 
