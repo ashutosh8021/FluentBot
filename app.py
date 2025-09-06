@@ -1,3 +1,8 @@
+# Load environment variables FIRST - before any other imports
+import os
+from dotenv import load_dotenv
+load_dotenv()  # Load .env file immediately
+
 import streamlit as st
 
 st.set_page_config(
@@ -10,18 +15,16 @@ st.set_page_config(
     }
 )
 
-import os
 import time
 import random
 from typing import List, Dict
 from datetime import datetime
 
-# Set up API keys in environment variables - users will set these locally
+# Check for required API key - only OpenRouter needed!
 if not os.environ.get("OPENROUTER_API_KEY"):
-    os.environ["OPENROUTER_API_KEY"] = "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"
-
-if not os.environ.get("GEMINI_API_KEY"):
-    os.environ["GEMINI_API_KEY"] = "AIzaSyAQ-eDivuDXmF2XoKdla7k-pzCCxl6cuts"
+    st.error("⚠️ OPENROUTER_API_KEY not found! Please add it to your .env file")
+    st.info("🔑 Get your free API key from: https://openrouter.ai/")
+    st.stop()
 
 # Try to import backend
 try:
