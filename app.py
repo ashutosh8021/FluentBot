@@ -30,15 +30,24 @@ from datetime import datetime
 # Check for required API key - check both env vars and Streamlit secrets
 api_key = os.environ.get("OPENROUTER_API_KEY")
 
+# Debug info for deployment troubleshooting
+debug_info = {"env_var_exists": bool(api_key)}
+
 # If not in environment variables, try Streamlit secrets
 if not api_key:
     try:
         api_key = st.secrets["OPENROUTER_API_KEY"]
-    except:
-        pass
+        debug_info["secrets_exists"] = True
+    except Exception as e:
+        debug_info["secrets_exists"] = False
+        debug_info["secrets_error"] = str(e)
 
 if not api_key:
     st.error("⚠️ OPENROUTER_API_KEY not found!")
+    
+    # Show debug info in development
+    if st.checkbox("Show debug info", help="For troubleshooting deployment issues"):
+        st.json(debug_info)
     
     st.markdown("""
     ### 🔑 How to add your API key:
@@ -49,9 +58,10 @@ if not api_key:
     3. Restart the app
     
     **For Streamlit Cloud:**
-    1. Go to your app settings
-    2. Add `OPENROUTER_API_KEY` to secrets
-    3. Redeploy the app
+    1. Go to your app settings (⚙️ button)
+    2. Click "Secrets" tab
+    3. Add: `OPENROUTER_API_KEY = "your_key_here"`
+    4. Save and reboot the app
     
     **Get your free API key:** https://openrouter.ai/
     """)
